@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Product Manager</title>
+  <style>
+    table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 15px;
+    }
+
+    th {
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Product Manager</h1>
+  <table id="products-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="products-table-body">
+    </tbody>
+  </table>
+  <br>
+  <h3>Add Product</h3>
+  <form id="add-product-form">
+    <input type="text" id="product-name" placeholder="Name">
+    <input type="text" id="product-description" placeholder="Description">
+    <input type="number" id="product-price" placeholder="Price">
+    <button type="submit">Add Product</button>
+  </form>
+  <br>
+  <h3>Update Product</h3>
+  <form id="update-product-form" style="display:none">
+    <input type="text" id="update-product-name" placeholder="Name">
+    <input type="text" id="update-product-description" placeholder="Description">
+    <input type="number" id="update-product-price" placeholder="Price">
+    <input type="hidden" id="update-product-id">
+    <button type="submit">Update Product</button>
+    <button type="button" id="cancel-update-button">Cancel</button>
+  </form>
+
+  <script>
+    const productsTableBody = document.getElementById("products-table-body");
+    const addProductForm = document.getElementById("add-product-form");
+    const updateProductForm = document.getElementById("update-product-form");
+    const updateProductIdInput = document.getElementById("update-product-id");
+    const updateProductNameInput = document.getElementById("update-product-name");
+    const updateProductDescriptionInput = document.getElementById("update-product-description");
+    const updateProductPriceInput = document.getElementById("update-product-price");
+    const cancelUpdateButton = document.getElementById("cancel-update-button");
+
+    function refreshProductsTable() {
+  fetch("http://localhost:5000/products")
+    .then(response => response.json())
+    .then(data => {
+      let productsTable = document.getElementById("productsTable");
+      let tableContent = "";
+
+      data.forEach(product => {
+        tableContent += `
+          <tr>
+            <td>${product.name}</td>
+            <td>${product.description}</td>
+            <td>${product.price}</td>
+            <td>
+              <button class="btn btn-danger" onclick="deleteProduct('${product._id}')">Delete</button>
+              <button class="btn btn-info" onclick="updateProduct('${product._id}')">Update</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      productsTable.innerHTML = tableContent;
+    });
+}
