@@ -30,7 +30,6 @@
       <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Description</th>
         <th>Price</th>
         <th>Actions</th>
       </tr>
@@ -68,7 +67,7 @@
     const cancelUpdateButton = document.getElementById("cancel-update-button");
 
     function refreshProductsTable() {
-  fetch("http://localhost:5000/products")
+  fetch("http://127.0.0.1:5000")
     .then(response => response.json())
     .then(data => {
       let productsTable = document.getElementById("productsTable");
@@ -78,7 +77,6 @@
         tableContent += `
           <tr>
             <td>${product.name}</td>
-            <td>${product.description}</td>
             <td>${product.price}</td>
             <td>
               <button class="btn btn-danger" onclick="deleteProduct('${product._id}')">Delete</button>
