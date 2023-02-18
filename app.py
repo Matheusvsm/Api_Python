@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from bson import json_util
 
 app = Flask(__name__)
 
@@ -8,25 +9,19 @@ client = MongoClient("mongodb+srv://5nsGyX2gWPUACLso:5nsGyX2gWPUACLso@api.6zng7j
 db = client["mydb"]
 products_collection = db["products"]
 
-
-@app.route("/products", methods=["GET"])
+#LEr dados
+@app.route("/products")
 def get_products():
-    page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', 10))
-    query = request.args.get('query', {})
-
     try:
-        products = list(products_collection.find(query).skip((page - 1) * limit).limit(limit))
+        products = list(products_collection.find())
 
-        if len(products) == 0:
-            return jsonify({"message": "No products found"}), 404
-        else:
-            return jsonify(products), 200
+        return json_util.dumps(products), 200, {'Content-Type': 'application/json'}
 
-    except:
-        return jsonify({"message": "Error processing request"}), 500
+    except Exception as e:
+        return jsonify({"message": f"Error processing request: {str(e)}"}), 500
 
 
+#Criar dados
 @app.route("/products", methods=["POST"])
 def create_product():
     if not request.json or not 'name' in request.json or not 'price' in request.json:
@@ -41,7 +36,7 @@ def create_product():
 
     return jsonify(product)
 
-
+#Atualizar dados
 @app.route("/products/<id>", methods=["PATCH"])
 def update_product(id):
     name = request.json.get("name")
@@ -65,7 +60,7 @@ def update_product(id):
 
     return jsonify(product)
 
-
+#Apagar dados 
 @app.route("/products/<id>", methods=["DELETE"])
 def delete_product(id):
     result = products_collection.delete_one({"_id": ObjectId(id)})
