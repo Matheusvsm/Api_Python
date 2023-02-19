@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>API de Produtos</title>
 </head>
+
 <body>
     <h1>Lista de Produtos</h1>
-    <form id="add-product-form">
+    <form id="add-product-form" onsubmit="loadProducts()">
         <label for="name">Nome:</label>
         <input type="text" id="name" name="name" required><br><br>
         <label for="price">Preço:</label>
@@ -24,6 +26,29 @@
         <tbody>
         </tbody>
     </table>
-    <script src="./static/app.js"></script>
+    <script>
+        function loadProducts() {
+            console.log("loadProducts")
+            $.ajax({
+                url: "http://127.0.0.1:5000/products",
+                type: "GET",
+                success: function (data) {
+                    var productsTable = $("#products-table tbody");
+                    productsTable.empty();
+                    for (var i = 0; i < data.length; i++) {
+                        var product = data[i];
+                        productsTable.append("<tr data-id='" + product.id + "'>" +
+                            "<td>" + product.id + "</td>" +
+                            "<td>" + product.name + "</td>" +
+                            "<td>" + product.price + "</td>" +
+                            "<td><button class='edit-product-button'>Editar</button> " +
+                            "<button class='delete-product-button'>Excluir</button></td>" +
+                            "</tr>");
+                    }
+                }
+            });
+        }
+    </script>
 </body>
+
 </html>

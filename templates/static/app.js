@@ -1,5 +1,6 @@
 // carrega todos os produtos existentes na tabela
 function loadProducts() {
+    console.log("loadProducts")
     $.ajax({
         url: "http://127.0.0.1:5000/products",
         type: "GET",
